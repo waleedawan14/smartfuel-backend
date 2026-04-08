@@ -12,7 +12,6 @@ from firebase_admin import credentials, firestore
 # FIREBASE SETUP (FIXED)
 # -------------------------
 
-def init_firebase():
 import os
 import json
 
