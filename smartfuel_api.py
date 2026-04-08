@@ -13,17 +13,22 @@ from firebase_admin import credentials, firestore
 # -------------------------
 
 def init_firebase():
-    config_dir = Path(".")
-    json_files = list(config_dir.glob("smartfuelkey.json"))
+import os
+import json
 
-    if not json_files:
-        raise FileNotFoundError("smartfuelkey.json not found in folder")
-
-    service_account_path = str(json_files[0])
-
+def init_firebase():
     if not firebase_admin._apps:
-        cred = credentials.Certificate(service_account_path)
+        firebase_config = os.environ.get("FIREBASE_CONFIG")
+
+        if not firebase_config:
+            raise Exception("FIREBASE_CONFIG not found")
+
+        cred_dict = json.loads(firebase_config)
+        cred = credentials.Certificate(cred_dict)
+
         firebase_admin.initialize_app(cred)
+
+    return firestore.client()
 
     return firestore.client()
 
