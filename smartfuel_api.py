@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional, List
+from pathlib import Path
 
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -12,13 +13,20 @@ from firebase_admin import credentials, firestore
 # -------------------------
 
 def init_firebase():
-    service_account_path = "smartfuelkey.json"  # ✅ your file name
+    config_dir = Path(".")
+    json_files = list(config_dir.glob("smartfuelkey.json"))
+
+    if not json_files:
+        raise FileNotFoundError("smartfuelkey.json not found in folder")
+
+    service_account_path = str(json_files[0])
 
     if not firebase_admin._apps:
         cred = credentials.Certificate(service_account_path)
         firebase_admin.initialize_app(cred)
 
     return firestore.client()
+
 
 db = init_firebase()
 
