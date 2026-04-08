@@ -29,8 +29,6 @@ def init_firebase():
 
     return firestore.client()
 
-    return firestore.client()
-
 
 db = init_firebase()
 
